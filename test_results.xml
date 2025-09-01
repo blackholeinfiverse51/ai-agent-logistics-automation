@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="34" time="18.460" timestamp="2025-08-23T10:09:48.867726" hostname="Rishabhs-MacBook-Air.local"><testcase classname="tests.test_agent.TestAgentCore" name="test_sense_function" time="0.023" /><testcase classname="tests.test_agent.TestAgentCore" name="test_plan_function" time="0.010" /><testcase classname="tests.test_agent.TestAgentCore" name="test_plan_function_edge_cases" time="0.011" /><testcase classname="tests.test_agent.TestAgentCore" name="test_act_function_high_confidence" time="0.027" /><testcase classname="tests.test_agent.TestAgentCore" name="test_act_function_low_confidence" time="0.010" /><testcase classname="tests.test_agent.TestAgentCore" name="test_threshold_configuration" time="0.010" /><testcase classname="tests.test_agent.TestChatbotLogic" name="test_extract_order_id" time="0.001" /><testcase classname="tests.test_agent.TestChatbotLogic" name="test_extract_product_id" time="0.002"><failure message="AssertionError: assert 'HERE' is None&#10; +  where 'HERE' = &lt;function extract_product_id at 0x7fb9414f0280&gt;('no product here')&#10; +    where &lt;function extract_product_id at 0x7fb9414f0280&gt; = chatbot_agent.extract_product_id">self = &lt;tests.test_agent.TestChatbotLogic object at 0x7fb9414efca0&gt;
+
+    def test_extract_product_id(self):
+        """Test product ID extraction from messages"""
+        assert chatbot_agent.extract_product_id("When will product A101 be restocked?") == "A101"
+        assert chatbot_agent.extract_product_id("Product b202 status") == "B202"
+        assert chatbot_agent.extract_product_id("PRODUCT C303") == "C303"
+&gt;       assert chatbot_agent.extract_product_id("no product here") is None
+E       AssertionError: assert 'HERE' is None
+E        +  where 'HERE' = &lt;function extract_product_id at 0x7fb9414f0280&gt;('no product here')
+E        +    where &lt;function extract_product_id at 0x7fb9414f0280&gt; = chatbot_agent.extract_product_id
+
+tests/test_agent.py:192: AssertionError</failure></testcase><testcase classname="tests.test_agent.TestChatbotLogic" name="test_order_status_query" time="0.003" /><testcase classname="tests.test_agent.TestChatbotLogic" name="test_restock_query" time="0.002" /><testcase classname="tests.test_agent.TestChatbotLogic" name="test_complex_query_escalation" time="0.002" /><testcase classname="tests.test_agent.TestChatbotLogic" name="test_default_response" time="0.002" /><testcase classname="tests.test_agent.TestHumanReviewSystem" name="test_confidence_calculation_restock" time="0.013"><failure message="assert 0.7 &lt; 0.7">self = &lt;tests.test_agent.TestHumanReviewSystem object at 0x7fb94152be80&gt;
+
+    def test_confidence_calculation_restock(self):
+        """Test confidence calculation for restock decisions"""
+        # Normal quantity should have high confidence
+        data = {"product_id": "A101", "quantity": 5}
+        confidence = self.review_system.calculate_confidence("restock", data)
+        assert confidence &gt; 0.7
+    
+        # Very high quantity should have lower confidence
+        data = {"product_id": "A101", "quantity": 25}
+        confidence = self.review_system.calculate_confidence("restock", data)
+&gt;       assert confidence &lt; 0.7
+E       assert 0.7 &lt; 0.7
+
+tests/test_agent.py:265: AssertionError</failure></testcase><testcase classname="tests.test_agent.TestHumanReviewSystem" name="test_confidence_calculation_chatbot" time="0.001"><failure message="assert 0.6 &lt; 0.4">self = &lt;tests.test_agent.TestHumanReviewSystem object at 0x7fb94152be20&gt;
+
+    def test_confidence_calculation_chatbot(self):
+        """Test confidence calculation for chatbot responses"""
+        # Normal query should have high confidence
+        data = {"query": "Where is my order?"}
+        confidence = self.review_system.calculate_confidence("chatbot_response", data)
+        assert confidence &gt; 0.7
+    
+        # Urgent query should have lower confidence
+        data = {"query": "This is urgent! Emergency!"}
+        confidence = self.review_system.calculate_confidence("chatbot_response", data)
+        assert confidence &lt; 0.7
+    
+        # Multiple urgent keywords
+        data = {"query": "URGENT EMERGENCY COMPLAINT REFUND"}
+        confidence = self.review_system.calculate_confidence("chatbot_response", data)
+&gt;       assert confidence &lt; 0.4
+E       assert 0.6 &lt; 0.4
+
+tests/test_agent.py:287: AssertionError</failure></testcase><testcase classname="tests.test_agent.TestHumanReviewSystem" name="test_submit_and_approve_review" time="0.009" /><testcase classname="tests.test_agent.TestHumanReviewSystem" name="test_submit_and_reject_review" time="0.008" /><testcase classname="tests.test_agent.TestHumanReviewSystem" name="test_invalid_review_id" time="0.001" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_root_endpoint" time="0.058" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_get_orders_endpoint" time="0.027" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_get_returns_endpoint" time="0.025" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_health_check_endpoint" time="0.018" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_api_error_handling" time="0.019" /><testcase classname="tests.test_api.TestAPIEndpoints" name="test_cors_headers" time="0.019" /><testcase classname="tests.test_api.TestAPIIntegration" name="test_api_data_consistency" time="0.043" /><testcase classname="tests.test_api.TestAPIIntegration" name="test_api_performance" time="0.003" /><testcase classname="tests.test_api.TestAPIIntegration" name="test_concurrent_requests" time="0.012" /><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_complete_restock_workflow" time="0.032" /><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_chatbot_order_tracking_workflow" time="0.011"><failure message="AssertionError: assert '101?' in '#x1F4E6 Your order #101 is: Shipped.'&#10; +  where '101?' = str('101?')">self = &lt;tests.test_integration.TestEndToEndWorkflows object at 0x7fb941b55730&gt;
+
+    def test_chatbot_order_tracking_workflow(self):
+        """Test complete chatbot workflow for order tracking"""
+    
+        with patch('chatbot_agent.review_system') as mock_review_system:
+            mock_review_system.requires_human_review.return_value = False
+    
+            # Test various order queries
+            test_cases = [
+                ("Where is my order #101?", "Shipped"),
+                ("What's the status of order 102?", "Delivered"),
+                ("Order #103 status please", "Processing"),
+                ("Check order 104", "Cancelled"),
+                ("Where is order #105?", "In Transit")
+            ]
+    
+            for query, expected_status in test_cases:
+                response = chatbot_agent.chatbot_response(query)
+                assert expected_status in response
+&gt;               assert str(query.split('#')[-1].split()[0]) in response
+E               AssertionError: assert '101?' in '#x1F4E6 Your order #101 is: Shipped.'
+E                +  where '101?' = str('101?')
+
+tests/test_integration.py:129: AssertionError</failure></testcase><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_chatbot_restock_inquiry_workflow" time="0.011"><failure message="assert 'C303' in &quot;#x1F916 I can help with:\n- 'Where is my order #123?'\n- 'When will Product A be restocked?'&quot;">self = &lt;tests.test_integration.TestEndToEndWorkflows object at 0x7fb941b55490&gt;
+
+    def test_chatbot_restock_inquiry_workflow(self):
+        """Test complete chatbot workflow for restock inquiries"""
+    
+        with patch('chatbot_agent.review_system') as mock_review_system:
+            mock_review_system.requires_human_review.return_value = False
+    
+            # Test restock queries
+            test_cases = [
+                ("When will product A101 be restocked?", "A101", "6"),
+                ("Product C303 restock status", "C303", "25"),
+                ("Is E505 being restocked?", "E505", "12")
+            ]
+    
+            for query, product_id, quantity in test_cases:
+                response = chatbot_agent.chatbot_response(query)
+&gt;               assert product_id in response
+E               assert 'C303' in "#x1F916 I can help with:\n- 'Where is my order #123?'\n- 'When will Product A be restocked?'"
+
+tests/test_integration.py:146: AssertionError</failure></testcase><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_escalation_workflow" time="0.010" /><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_human_review_complete_workflow" time="0.027"><failure message="assert 1 == 2&#10; +  where 1 = len(   2025-08-23T10:10:06.333911  ... Approved after supplier confirmation\n0  2025-08-23T10:10:06.335141  ...          Escalated to senior support\n\n[1 rows x 7 columns])">self = &lt;tests.test_integration.TestEndToEndWorkflows object at 0x7fb941b55190&gt;
+
+    def test_human_review_complete_workflow(self):
+        """Test complete human review workflow"""
+    
+        review_system = HumanReviewSystem()
+        review_system.pending_reviews_file = os.path.join(self.test_dir, 'pending.json')
+        review_system.review_log_file = os.path.join(self.test_dir, 'review_log.csv')
+    
+        # Submit multiple reviews
+        review_ids = []
+    
+        # High quantity restock (should require review)
+        data1 = {"product_id": "X999", "quantity": 50}
+        review_id1 = review_system.submit_for_review("restock", data1, "High quantity restock")
+        review_ids.append(review_id1)
+    
+        # Urgent customer query (should require review)
+        data2 = {"query": "URGENT: My order is completely wrong!"}
+        review_id2 = review_system.submit_for_review("chatbot_response", data2, "Handle urgent query")
+        review_ids.append(review_id2)
+    
+        # Verify both are pending
+        pending = review_system.get_pending_reviews()
+        assert len(pending) == 2
+    
+        # Approve first, reject second
+        success1 = review_system.approve_decision(review_id1, "Approved after supplier confirmation")
+        success2 = review_system.reject_decision(review_id2, "Escalated to senior support")
+    
+        assert success1
+        assert success2
+    
+        # Verify no pending reviews
+        pending = review_system.get_pending_reviews()
+        assert len(pending) == 0
+    
+        # Verify review log exists and has entries
+        assert os.path.exists(review_system.review_log_file)
+        review_log = pd.read_csv(review_system.review_log_file)
+&gt;       assert len(review_log) == 2
+E       assert 1 == 2
+E        +  where 1 = len(   2025-08-23T10:10:06.333911  ... Approved after supplier confirmation\n0  2025-08-23T10:10:06.335141  ...          Escalated to senior support\n\n[1 rows x 7 columns])
+
+tests/test_integration.py:210: AssertionError</failure></testcase><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_data_consistency_workflow" time="0.042" /><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_error_handling_workflow" time="0.010"><failure message="Failed: Agent should handle errors gracefully, but raised: File not found">self = &lt;tests.test_integration.TestEndToEndWorkflows object at 0x7fb941b55940&gt;
+
+    def test_error_handling_workflow(self):
+        """Test error handling in workflows"""
+    
+        # Test with corrupted data
+        with patch('agent.sense') as mock_sense:
+            mock_sense.side_effect = Exception("File not found")
+    
+            # Should handle gracefully
+            try:
+&gt;               agent.run_agent()
+
+tests/test_integration.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+agent.py:79: in run_agent
+    returns = sense()
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/unittest/mock.py:1092: in __call__
+    return self._mock_call(*args, **kwargs)
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/unittest/mock.py:1096: in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;MagicMock name='sense' id='140433087120768'&gt;, args = (), kwargs = {}
+effect = Exception('File not found')
+
+    def _execute_mock_call(self, /, *args, **kwargs):
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+&gt;               raise effect
+E               Exception: File not found
+
+/Library/Frameworks/Python.framework/Versions/3.9/lib/python3.9/unittest/mock.py:1151: Exception
+
+During handling of the above exception, another exception occurred:
+
+self = &lt;tests.test_integration.TestEndToEndWorkflows object at 0x7fb941b55940&gt;
+
+    def test_error_handling_workflow(self):
+        """Test error handling in workflows"""
+    
+        # Test with corrupted data
+        with patch('agent.sense') as mock_sense:
+            mock_sense.side_effect = Exception("File not found")
+    
+            # Should handle gracefully
+            try:
+                agent.run_agent()
+            except Exception as e:
+&gt;               pytest.fail(f"Agent should handle errors gracefully, but raised: {e}")
+E               Failed: Agent should handle errors gracefully, but raised: File not found
+
+tests/test_integration.py:262: Failed</failure></testcase><testcase classname="tests.test_integration.TestEndToEndWorkflows" name="test_performance_workflow" time="0.026" /></testsuite></testsuites>

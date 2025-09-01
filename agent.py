@@ -76,9 +76,27 @@ def log_actions(restocks):
 
 # === Main Agent Flow ===
 def run_agent():
-    returns = sense()
-    plan_result = plan(returns)
-    act(plan_result)
+    try:
+        returns = sense()
+        plan_result = plan(returns)
+        act(plan_result)
+    except Exception as e:
+        print(f"⚠️  Agent error: {e}")
+        # Log error but don't crash
+        import datetime
+        error_log = [{
+            'timestamp': datetime.datetime.now().isoformat(),
+            'action': 'error',
+            'ProductID': 'N/A',
+            'quantity': 0,
+            'confidence': 0.0,
+            'human_review': True,
+            'details': f"Error: {str(e)}"
+        }]
+        df = pd.DataFrame(error_log)
+        df.to_csv(LOG_FILE, mode='a', index=False, header=not pd.io.common.file_exists(LOG_FILE))
+        return False
+    return True
 
 # === Run ===
 if __name__ == "__main__":

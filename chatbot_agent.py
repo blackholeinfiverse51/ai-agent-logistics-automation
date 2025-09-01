@@ -15,9 +15,10 @@ def extract_order_id(message):
 
 # Extract product ID from message
 def extract_product_id(message):
-    match = re.search(r"product\s([A-Za-z0-9]+)", message.lower())
+    # Look for product followed by alphanumeric ID (like A101, B202)
+    match = re.search(r"product\s+([A-Z]\d+)", message.upper())
     if match:
-        return match.group(1).upper()
+        return match.group(1)
     return None
 
 # Main chatbot function
